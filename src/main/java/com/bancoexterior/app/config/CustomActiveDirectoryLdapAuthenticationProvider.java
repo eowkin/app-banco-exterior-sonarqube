@@ -127,7 +127,7 @@ public final class CustomActiveDirectoryLdapAuthenticationProvider extends Abstr
 			
 		} catch (javax.naming.NamingException e) {
 			if ((e instanceof AuthenticationException) || (e instanceof OperationNotSupportedException)) {
-				handleBindException(bindPrincipal, e);
+				handleBindException(e);
 				throw badCredentials(e);
 			} else {
 				throw LdapUtils.convertLdapException(e);
@@ -135,7 +135,7 @@ public final class CustomActiveDirectoryLdapAuthenticationProvider extends Abstr
 		}
 	}
 
-	private void handleBindException(String bindPrincipal, NamingException exception) {
+	private void handleBindException(NamingException exception) {
 
 		int subErrorCode = parseSubErrorCode(exception.getMessage());
 		if (subErrorCode <= 0) {
@@ -183,7 +183,7 @@ public final class CustomActiveDirectoryLdapAuthenticationProvider extends Abstr
 
 	private DirContextOperations searchForUser(DirContext context, String username) throws javax.naming.NamingException {
 		SearchControls searchControls = new SearchControls();
-		String returnedAtts[] ={ "sn", "givenName", "name", "userPrincipalName", "displayName", "memberOf" };
+		String[] returnedAtts ={ "sn", "givenName", "name", "userPrincipalName", "displayName", "memberOf" };
 		searchControls.setReturningAttributes(returnedAtts);
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		String bindPrincipal = createBindPrincipal(username);

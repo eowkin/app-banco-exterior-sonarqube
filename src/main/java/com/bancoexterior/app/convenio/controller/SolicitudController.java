@@ -251,13 +251,6 @@ public class SolicitudController {
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
-		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
-		
-		
 		try {
 			//---------------Llenado Acumulados-------------------//
 			acumulados(model);
@@ -270,17 +263,7 @@ public class SolicitudController {
 			filtrosVenta.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosVenta);
 			
-			MovimientosResponse responseVenta = responsePorAprobarVenta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			modelResponseVentaPorAprobar(model, movimientosRequest);
 			
 			//---------------Hasta aqui Llenado listaMovimientos por aprobar Venta-------------------//
 			
@@ -292,17 +275,8 @@ public class SolicitudController {
 			filtrosCompra.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosCompra);
 			
-			MovimientosResponse responseCompra = responsePorAprobarCompra(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			modelResponseCompraPorAprobar(model, movimientosRequest);
+			
 			LOGGER.info(SOLICITUDCONTROLLERLISTAMOVIMIENTOSAPROBARVENTASF);
 			return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 			//---------------Llenado listaMovimientos por aprobar Compra-------------------//
@@ -315,6 +289,37 @@ public class SolicitudController {
 		}
 	}
 	
+	public void modelResponseVentaPorAprobar(Model model, MovimientosRequest movimientosRequest) throws CustomException{
+		List<Movimiento> listaMovimientosVenta;
+		DatosPaginacion datosPaginacionVenta;
+		MovimientosResponse responseVenta = responsePorAprobarVenta(movimientosRequest);
+		listaMovimientosVenta = responseVenta.getMovimientos();
+		datosPaginacionVenta = responseVenta.getDatosPaginacion();
+		if(!listaMovimientosVenta.isEmpty()) {
+			for (Movimiento movimiento : listaMovimientosVenta) {
+				movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
+				movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
+			}
+		}
+		model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+		model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+	}
+	
+	public void modelResponseCompraPorAprobar(Model model, MovimientosRequest movimientosRequest) throws CustomException{
+		List<Movimiento> listaMovimientosCompra;
+		DatosPaginacion datosPaginacionCompra;
+		MovimientosResponse responseCompra = responsePorAprobarCompra(movimientosRequest);
+		listaMovimientosCompra = responseCompra.getMovimientos();
+		datosPaginacionCompra = responseCompra.getDatosPaginacion();
+		if(!listaMovimientosCompra.isEmpty()) {
+			for (Movimiento movimiento : listaMovimientosCompra) {
+				movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
+				movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
+			}
+		}
+		model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+		model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+	}
 	
 	public MovimientosResponse responsePorAprobarCompra(MovimientosRequest movimientosRequest)throws CustomException{
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
@@ -456,11 +461,7 @@ public class SolicitudController {
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		
 		try {
 			acumulados(model);
@@ -473,18 +474,7 @@ public class SolicitudController {
 			filtrosVenta.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosVenta);
 			
-			MovimientosResponse responseVenta = responsePorAprobarVenta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			modelResponseVentaPorAprobar(model, movimientosRequest);
 			
 			//---------------Hasta aqui Llenado listaMovimientos por aprobar Venta-------------------//
 			
@@ -497,18 +487,8 @@ public class SolicitudController {
 			filtrosCompra.setEstatus(0);
 			movimientosRequest.setFiltros(filtrosCompra);
 			
-			MovimientosResponse responseCompra = responsePorAprobarCompra(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
+			modelResponseCompraPorAprobar(model, movimientosRequest);
 			
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setTasaClienteString(libreriaUtil.formatNumber(movimiento.getTasaCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 			LOGGER.info(SOLICITUDCONTROLLERLISTAMOVIMIENTOSAPROBARCOMPRASF);
 			return URLLISTAMOVIMIENTOSPORAPROBARVENTA;
 		} catch (CustomException e) {
@@ -520,9 +500,7 @@ public class SolicitudController {
 		}
 	}
 	
-	public void setMovimientosRequestPorAprobarVenta(int numeroPagina) {
-		
-	}
+	
 	
 	@GetMapping("/listaSolicitudesMovimientosVentas/{page}")
 	public String consultaMovimientoVenta(@PathVariable("page") int page,Model model, HttpSession httpSession) {
@@ -532,13 +510,7 @@ public class SolicitudController {
 			return URLNOPERMISO;
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
-		
-		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
-		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
+	
 		try {
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -547,20 +519,7 @@ public class SolicitudController {
 			movimientosRequest.setFiltros(filtrosVenta);
 			
 			//-----LLenando Lista Movimientos Ventas-------------//
-			MovimientosResponse responseVenta = responseConsulta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			modelResponseVentaConsulta(model, movimientosRequest);
 			
 			//-----Fin LLenando Lista Movimientos Ventas-------------//
 			
@@ -570,20 +529,9 @@ public class SolicitudController {
 			Movimiento filtrosCompra = new Movimiento();
 			filtrosCompra.setTipoTransaccion("C");
 			movimientosRequest.setFiltros(filtrosCompra);
-			MovimientosResponse responseCompra = responseConsulta(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			
+			modelResponseCompraConsulta(model, movimientosRequest);
+			
 			LOGGER.info(SOLICITUDCONTROLLERLISTAMOVIMIENTOSVENTASF);
 			return URLLISTAMOVIMIENTOSVENTA;
 			//-----Fin LLenando Lista Movimientos Compras-------------//
@@ -594,6 +542,45 @@ public class SolicitudController {
 			consultaMovimientoError(model);
 			return URLLISTAMOVIMIENTOSVENTA;
 		}
+	}
+	
+	
+	public void modelResponseVentaConsulta(Model model, MovimientosRequest movimientosRequest) throws CustomException{
+		List<Movimiento> listaMovimientosVenta;
+		DatosPaginacion datosPaginacionVenta;
+		MovimientosResponse responseVenta = responseConsulta(movimientosRequest);
+		listaMovimientosVenta = responseVenta.getMovimientos();
+		datosPaginacionVenta = responseVenta.getDatosPaginacion();
+		if(!listaMovimientosVenta.isEmpty()) {
+			for (Movimiento movimiento : listaMovimientosVenta) {
+				movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
+				movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
+				movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
+			}
+		}else {
+			model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
+		}
+		model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+		model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+	}
+	
+	public void modelResponseCompraConsulta(Model model, MovimientosRequest movimientosRequest) throws CustomException{
+		List<Movimiento> listaMovimientosCompra;
+		DatosPaginacion datosPaginacionCompra;
+		MovimientosResponse responseCompra = responseConsulta(movimientosRequest);
+		listaMovimientosCompra = responseCompra.getMovimientos();
+		datosPaginacionCompra = responseCompra.getDatosPaginacion();
+		if(!listaMovimientosCompra.isEmpty()) {
+			for (Movimiento movimiento : listaMovimientosCompra) {
+				movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
+				movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
+				movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
+			}
+		}else {
+			model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
+		}
+		model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+		model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
 	}
 	
 	public MovimientosResponse responseConsulta(MovimientosRequest movimientosRequest)throws CustomException{
@@ -636,12 +623,6 @@ public class SolicitudController {
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
-		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
-		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -650,21 +631,7 @@ public class SolicitudController {
 			movimientosRequest.setFiltros(filtrosVenta);
 			
 			//-----LLenando Lista Movimientos Ventas-------------//
-			MovimientosResponse responseVenta = responseConsulta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
-			
+			modelResponseVentaConsulta(model, movimientosRequest);
 			//-----Fin LLenando Lista Movimientos Ventas-------------//
 			
 			//-----LLenando Lista Movimientos Compras-------------//
@@ -674,20 +641,8 @@ public class SolicitudController {
 			filtrosCompra.setTipoTransaccion("C");
 			movimientosRequest.setFiltros(filtrosCompra);
 			
-			MovimientosResponse responseCompra = responseConsulta(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			modelResponseCompraConsulta(model, movimientosRequest);
+			
 			LOGGER.info(SOLICITUDCONTROLLERLISTAMOVIMIENTOSCOMPRASF);
 			return URLLISTAMOVIMIENTOSCOMPRA;
 			//-----Fin LLenando Lista Movimientos Compras-------------//
@@ -771,13 +726,7 @@ public class SolicitudController {
 		}
 		
 		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen(valorOrigen);
-		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
-		aprobarRechazarRequest.setTipoPacto(movimiento.getTipoPacto());
-		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
-		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
-		aprobarRechazarRequest.setEstatus(1);
+		setAprobarRechazarRequestGuardar(aprobarRechazarRequest, request.getRemoteAddr(), movimiento, 1);
 		
 		try {
 			String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
@@ -794,6 +743,18 @@ public class SolicitudController {
 			return URLFORMSOLICITUD;
 			
 		}
+	}
+	
+	
+	public void setAprobarRechazarRequestGuardar(AprobarRechazarRequest aprobarRechazarRequest, 
+			String remoteAddr, Movimiento movimiento, Integer estatus) {
+		aprobarRechazarRequest.setIp(remoteAddr);
+		aprobarRechazarRequest.setOrigen(valorOrigen);
+		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
+		aprobarRechazarRequest.setTipoPacto(movimiento.getTipoPacto());
+		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
+		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
+		aprobarRechazarRequest.setEstatus(estatus);
 	}
 	
 	@GetMapping("/procesarVenta/{codOperacion}/{page}")
@@ -869,13 +830,7 @@ public class SolicitudController {
 		}
 		
 		AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-		aprobarRechazarRequest.setIp(request.getRemoteAddr());
-		aprobarRechazarRequest.setOrigen(valorOrigen);
-		aprobarRechazarRequest.setCodSolicitud(movimiento.getCodOperacion());
-		aprobarRechazarRequest.setTipoPacto(movimiento.getTipoPacto());
-		aprobarRechazarRequest.setTasa(movimiento.getTasaOperacion());
-		aprobarRechazarRequest.setFechaLiquidacion(movimiento.getFecha());
-		aprobarRechazarRequest.setEstatus(1);
+		setAprobarRechazarRequestGuardar(aprobarRechazarRequest, request.getRemoteAddr(), movimiento, 1);
 		
 		try {
 			String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
@@ -891,6 +846,17 @@ public class SolicitudController {
 			model.addAttribute(LISTAERROR, listaError);
 			return URLFORMSOLICITUDVENTA;
 		}
+	}
+	
+	public void setAprobarRechazarRequest(AprobarRechazarRequest aprobarRechazarRequest, 
+			String remoteAddr, String codOperacion, Movimiento movimientoProcesar, Integer estatus) {
+		aprobarRechazarRequest.setIp(remoteAddr);
+		aprobarRechazarRequest.setOrigen(valorOrigen);
+		aprobarRechazarRequest.setCodSolicitud(codOperacion);
+		aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
+		aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
+		aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
+		aprobarRechazarRequest.setEstatus(estatus);
 	}
 	
 	
@@ -924,13 +890,7 @@ public class SolicitudController {
 				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-				aprobarRechazarRequest.setIp(request.getRemoteAddr());
-				aprobarRechazarRequest.setOrigen(valorOrigen);
-				aprobarRechazarRequest.setCodSolicitud(codOperacion);
-				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
-				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
-				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-				aprobarRechazarRequest.setEstatus(2);
+				setAprobarRechazarRequest(aprobarRechazarRequest, request.getRemoteAddr(), codOperacion, movimientoProcesar, 2);
 				
 				String respuesta = movimientosApiRest.rechazarCompra(aprobarRechazarRequest);
 				LOGGER.info(respuesta);
@@ -973,7 +933,7 @@ public class SolicitudController {
 					valorPage = page;
 			}
 		}
-		LOGGER.info("getPageAprobarRechazarCompra-valorPage :"+valorPage);	
+		LOGGER.info(valorPage);	
 		return valorPage;		
 		
 	}
@@ -1000,7 +960,7 @@ public class SolicitudController {
 					valorPage = page;
 			}
 		}
-		LOGGER.info("getPageAprobarRechazarVenta - valorPage :"+valorPage);	
+		LOGGER.info(valorPage);	
 		return valorPage;		
 		
 	}
@@ -1033,13 +993,7 @@ public class SolicitudController {
 				
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-				aprobarRechazarRequest.setIp(request.getRemoteAddr());
-				aprobarRechazarRequest.setOrigen(valorOrigen);
-				aprobarRechazarRequest.setCodSolicitud(codOperacion);
-				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
-				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
-				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-				aprobarRechazarRequest.setEstatus(1);
+				setAprobarRechazarRequest(aprobarRechazarRequest, request.getRemoteAddr(), codOperacion, movimientoProcesar, 1);
 				
 				String respuesta = movimientosApiRest.aprobarCompra(aprobarRechazarRequest);
 				LOGGER.info(respuesta);
@@ -1092,15 +1046,8 @@ public class SolicitudController {
 				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-				aprobarRechazarRequest.setIp(request.getRemoteAddr());
-				aprobarRechazarRequest.setOrigen(valorOrigen);
-				aprobarRechazarRequest.setCodSolicitud(codOperacion);
-				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
-				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
-				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-				aprobarRechazarRequest.setEstatus(2);
-				
-				
+				setAprobarRechazarRequest(aprobarRechazarRequest, request.getRemoteAddr(), codOperacion, movimientoProcesar, 2);
+			
 				String respuesta = movimientosApiRest.rechazarVenta(aprobarRechazarRequest);
 				LOGGER.info(respuesta);
 				redirectAttributes.addFlashAttribute(MENSAJEVENTA, respuesta);
@@ -1150,14 +1097,7 @@ public class SolicitudController {
 				model.addAttribute(PAGINAACTUAL, page);
 				
 				AprobarRechazarRequest aprobarRechazarRequest = getAprobarRechazarRequest();
-				aprobarRechazarRequest.setIp(request.getRemoteAddr());
-				aprobarRechazarRequest.setOrigen(valorOrigen);
-				aprobarRechazarRequest.setCodSolicitud(codOperacion);
-				aprobarRechazarRequest.setTipoPacto(movimientoProcesar.getTipoPacto());
-				aprobarRechazarRequest.setTasa(movimientoProcesar.getTasaCliente());
-				aprobarRechazarRequest.setFechaLiquidacion(fecha(new Date()));
-				aprobarRechazarRequest.setEstatus(1);
-				
+				setAprobarRechazarRequest(aprobarRechazarRequest, request.getRemoteAddr(), codOperacion, movimientoProcesar, 1);
 				
 				String respuesta = movimientosApiRest.aprobarVenta(aprobarRechazarRequest);
 				LOGGER.info(respuesta);
@@ -1483,8 +1423,7 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
+		
 		try {
 			movimientosRequest.setNumeroPagina(1);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1519,23 +1458,8 @@ public class SolicitudController {
 			
 			movimientosRequest.setFiltros(filtrosVenta);
 			//-----LLenando Lista Movimientos Ventas-------------//
-			MovimientosResponse responseVenta = responseConsulta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-				datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			}else {
-				model.addAttribute(MENSAJE, MENSAJENORESULTADO);
-			}
-				
 			
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			modelResponseVenta(model, movimientosRequest);
 			model.addAttribute(ESTATUS, movimientoSearch.getEstatus());
 			model.addAttribute(FECHADESDE, movimientoSearch.getFechas().getFechaDesde());
 			model.addAttribute(FECHAHASTA, movimientoSearch.getFechas().getFechaHasta());
@@ -1553,15 +1477,25 @@ public class SolicitudController {
 		} catch (CustomException e) {
 			LOGGER.error(e.getMessage());
 			model.addAttribute(MENSAJEERROR, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			searchError(model);
 			return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 		}
 		
 	}
+	
+	public void searchError(Model model) {
+		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
+		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
+		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
+		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
+		
+		model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
+		model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+		model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
+		model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+	}
+	
 	
 	public Model modelResponseCompra(Model model, MovimientosRequest movimientosRequest) throws CustomException{
 		List<Movimiento> listaMovimientosCompra;
@@ -1598,8 +1532,7 @@ public class SolicitudController {
 		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
 		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
 		
-		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
-		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
+		
 		try {
 			movimientosRequest.setNumeroPagina(page);
 			movimientosRequest.setTamanoPagina(numeroRegistroPage);
@@ -1630,21 +1563,7 @@ public class SolicitudController {
 			
 			movimientosRequest.setFiltros(filtrosVenta);
 			//-----LLenando Lista Movimientos Ventas-------------//
-			MovimientosResponse responseVenta = responseConsulta(movimientosRequest);
-			listaMovimientosVenta = responseVenta.getMovimientos();
-			datosPaginacionVenta = responseVenta.getDatosPaginacion();
-			if(!listaMovimientosVenta.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosVenta) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERROR, MENSAJENORESULTADO);	
-			}
-				
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
+			modelResponseVenta(model, movimientosRequest);
 			model.addAttribute(ESTATUS, estatus);
 			model.addAttribute(FECHADESDE, fechaDesde);
 			model.addAttribute(FECHAHASTA, fechaHasta);
@@ -1660,11 +1579,8 @@ public class SolicitudController {
 		} catch (CustomException e) {
 			LOGGER.error(e.getMessage());
 			model.addAttribute(MENSAJEERROR, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
 			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			searchError(model);
 			return URLLISTAMOVIMIENTOSVENTASEARCHESTATUS;
 		}
 	}
@@ -1683,8 +1599,7 @@ public class SolicitudController {
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
+		
 		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
@@ -1720,22 +1635,7 @@ public class SolicitudController {
 			
 			//-----LLenando Lista Movimientos Compras-------------//
 			movimientosRequest.setFiltros(filtrosCompra);
-			MovimientosResponse responseCompra = responseConsulta(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-				datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			}else {
-				model.addAttribute(MENSAJECOMPRA, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			modelResponseCompra(model, movimientosRequest);
 			model.addAttribute(ESTATUS, movimientoSearch.getEstatus());
 			model.addAttribute(FECHADESDE, movimientoSearch.getFechas().getFechaDesde());
 			model.addAttribute(FECHAHASTA, movimientoSearch.getFechas().getFechaHasta());
@@ -1751,12 +1651,9 @@ public class SolicitudController {
 			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		} catch (CustomException e) {
 			LOGGER.error(e.getMessage());
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
-			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			searchError(model);
 			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		}
 		
@@ -1793,10 +1690,6 @@ public class SolicitudController {
 		}
 		MovimientosRequest movimientosRequest = getMovimientosRequest();
 		
-		
-		List<Movimiento> listaMovimientosVenta = new ArrayList<>();
-		DatosPaginacion datosPaginacionVenta = new DatosPaginacion(0,0,0,0);
-		
 		List<Movimiento> listaMovimientosCompra = new ArrayList<>();
 		DatosPaginacion datosPaginacionCompra = new DatosPaginacion(0,0,0,0);
 		try {
@@ -1828,20 +1721,7 @@ public class SolicitudController {
 			
 			movimientosRequest.setFiltros(filtrosCompra);
 			//-----LLenando Lista Movimientos Compras-------------//
-			MovimientosResponse responseCompra = responseConsulta(movimientosRequest);
-			listaMovimientosCompra = responseCompra.getMovimientos();
-			datosPaginacionCompra = responseCompra.getDatosPaginacion();
-			if(!listaMovimientosCompra.isEmpty()) {
-				for (Movimiento movimiento : listaMovimientosCompra) {
-					movimiento.setMontoBsOperacionString(libreriaUtil.formatNumber(movimiento.getMontoBsOperacion()));
-					movimiento.setMontoBsClienteString(libreriaUtil.formatNumber(movimiento.getMontoBsCliente()));
-					movimiento.setMontoDivisaString(libreriaUtil.formatNumber(movimiento.getMontoDivisa()));
-				}
-			}else {
-				model.addAttribute(MENSAJEERRORCOMPRA, MENSAJENORESULTADO);
-			}
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			modelResponseCompra(model, movimientosRequest);
 			model.addAttribute(ESTATUS, estatus);
 			model.addAttribute(FECHADESDE, fechaDesde);
 			model.addAttribute(FECHAHASTA, fechaHasta);
@@ -1857,12 +1737,9 @@ public class SolicitudController {
 			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		} catch (CustomException e) {
 			LOGGER.error(e.getMessage());
+			model.addAttribute(MENSAJEERROR, e.getMessage());
 			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSVENTA, listaMovimientosVenta);
-			model.addAttribute(DATOSPAGINACIONVENTA, datosPaginacionVenta);
-			model.addAttribute(MENSAJEERRORCOMPRA, e.getMessage());
-			model.addAttribute(LISTAMOVIMIENTOSCOMPRA, listaMovimientosCompra);
-			model.addAttribute(DATOSPAGINACIONCOMPRA, datosPaginacionCompra);
+			searchError(model);
 			return URLLISTAMOVIMIENTOSCOMPRASEARCHESTATUS;
 		}
 	}

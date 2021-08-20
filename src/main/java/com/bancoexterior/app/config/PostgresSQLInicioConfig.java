@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,8 +25,7 @@ import com.bancoexterior.app.seguridad.MiCipher;
 public class PostgresSQLInicioConfig {
 	
 	
-	@Autowired
-	private Environment env;
+	
 	
 	private BasicDataSource db = new BasicDataSource();
 	
@@ -78,6 +75,17 @@ public class PostgresSQLInicioConfig {
     @Value("${dbIni.validationQueryTimeout}")
     private String validationQueryTimeout;
     
+    @Value("${postgreIni.jpa.show-sql}")
+    private String postgreIniJpaShowSql;
+    
+    @Value("${postgreIni.jpa.hibernate.ddl-auto}")
+    private String postgreIniJpaHibernateDdlAuto;
+    
+    @Value("${postgreIni.jpa.database-platform}")
+    private String postgreIniJpaDatabasePlatform;
+    
+    
+    
     
     @Bean(name = "userDataSource")
 	public DataSource userDatasource() {
@@ -120,9 +128,9 @@ public class PostgresSQLInicioConfig {
 		em.setJpaVendorAdapter(vendorAdapter);
 		
 		Map<String, Object> properties = new HashMap<>();
-		properties.put("hibernate.hbm2ddl.auto", env.getProperty("postgreIni.jpa.hibernate.ddl-auto"));
-		properties.put("hibernate.show-sql", env.getProperty("postgreIni.jpa.show-sql"));
-		properties.put("hibernate.dialect", env.getProperty("postgreIni.jpa.database-platform"));
+		properties.put("hibernate.hbm2ddl.auto", postgreIniJpaHibernateDdlAuto);
+		properties.put("hibernate.show-sql", postgreIniJpaShowSql);
+		properties.put("hibernate.dialect", postgreIniJpaDatabasePlatform);
 		
 		em.setJpaPropertyMap(properties);
 		
